@@ -1,0 +1,8 @@
+#kitemanager
+kitemanager.host=localhost
+kitemanager.port=6379
+kitemanager.timeoutMill=1000
+#kitemanager.password=foobared
+kitemanager.maxTotal=100
+kitemanager.maxIdle=20
+kitemanager.minIdle=5

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
+    <title>Kite Manager</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="kitemanager.js"></script>
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+        div {
+            padding: 0.2em;
+        }
+
+        input[type='text'] {
+            margin-top: 0.5em; width: 20em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        ul {
+            padding-left: 0em;
+        }
+        li {
+            color: blue;
+            cursor: pointer;
+            list-style: none;
+            margin: 0.25em;
+        }
+    </style>
+</head>
+<body>
+<div align="center" style="padding: 0px; margin: 0px;">
+<div id="mainCon" style="text-align: left; width: 60em; padding: 0.3em; margin: 0px; background-color: lavender;">
+
+<h2>Kite Manager</h2>
+
+<hr>
+
+<div>
+    <span style="display: inline-block; margin-top: 0.5em; font-size: 1.2em; font-weight: bold;">
+    kite agent 列表 ($agentList.size() agent在线)
+    </span>
+</div>
+<div>
+<input id="filterText" type="text" placeholder="输入名称或ip过滤">
+</div>
+
+<div>
+
+<ul id="agentList">
+    <!-- todo 加入链接进入命令执行页面 -->
+#foreach( $key in $agentList.keySet() )
+    <li title="$agentList.get($key).clientIPv4">$key</li>
+#end
+</ul>
+
+</div>
+
+</div>
+</div>
+</body>
+
+<script>
+    //适配移动端
+    $(document).ready(function(){
+         if(existsQueryString("m") == true) {
+             $("#mainCon").css("width", "21.5em");
+         }
+    });
+
+    $("#filterText").keyup(function() {
+        let text = $("#filterText").val();
+        $.ajax({
+            type: "post",
+            data: { "text" : text },
+            url: "filterAgent",
+            dataType: "json",
+            success: function(data){
+                if (data.code != 200) {
+                    alert(data.msg);
+                } else {
+                    let html = "";
+                    for (i in data.data) {
+                        html += "<li title=\"" + data.data[i][1] + "\">" + data.data[i][0] + "</li>";
+                    }
+                    $("#agentList").find("li").unbind("click");
+                    $("#agentList").html(html);
+
+                    $("#agentList").find("li").click(toExePate);
+                }
+            }
+        });
+    });
+
+    //点击进入命令执行页面
+    let toExePate = function () {
+        let text = $(this).text();
+        let clientId = text;
+        window.location = "execPage?clientId=" + clientId;
+    };
+    $("#agentList").find("li").click(toExePate);
+</script>
+
+</html>

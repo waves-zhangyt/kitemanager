@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
+    <title>Kite Manager</title>
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="kitemanager.js"></script>
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+        input {
+            font-size: 0.95em;
+        }
+        input[type='text'] {
+            width: 15.225em;
+            font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+            padding-left: 0.3em;
+        }
+        textarea {
+            width: 98%;
+            height: 7em;
+            font-size: 1em;
+            border: 1px solid gray;
+        }
+        div {
+            padding: 0.2em;
+        }
+    </style>
+
+</head>
+<body>
+<div align="center" style="padding: 0px; margin: 0px;">
+<div id="mainCon" style="text-align: left; width: 60em; padding: 0.3em; margin: 0px; background-color: lavender;">
+
+<span style="display: inline-block; float: right; width: 10em; margin-top: 1.5em; text-align: right; margin-right: 0.7em;">
+    <a href="/kite/">回到列表页</a>
+</span>
+<h2>Kite Manager</h2>
+
+<hr>
+
+<div>
+    <span>执行目标：</span>
+    <span><input type="text" id="clientId" placeholder="clientId 多个可用逗号隔开，可用正则匹配" value="$!{clientId}"></span>
+</div>
+<div>
+    <span>命令类型：</span>
+    <span>
+        <select id="type">
+            <option>cmd.run</option>
+            <option>proxy.http</option>
+        </select>
+    </span>
+    <span>
+        <input type="checkbox" id="async"> 异步执行
+    </span>
+</div>
+<div>
+    <span>超时时间：</span>
+    <span><input type="text" id="timeout" placeholder="20（可选，默认20秒）"></span>
+</div>
+<div>
+    <span>任务编码：</span>
+    <span><input type="text" id="jobId" placeholder="可选，不填则自动生成(jobId)"></span>
+</div>
+
+<div>
+    <div>命令：</div>
+    <textarea id="body" placeholder="输入命令，例如 'echo 你好'"></textarea>
+</div>
+
+<div>
+    <input type="button" value="执行命令" id="execBtn">
+</div>
+
+<div style="margin-top: 1em;">
+    <input type="text" placeholder="输入异步命令编码获取结果" id="rltJobId">
+    <input type="button" value="获取" id="rltBtn">
+</div>
+
+<div>
+    <div>输出结果:</div>
+    <textarea id="resultCon" disabled></textarea>
+</div>
+
+<div>
+
+</div>
+
+</div>
+</div>
+</body>
+
+<script>
+//适配移动端
+$(document).ready(function(){
+     if(existsQueryString("m") == true) {
+         $("#mainCon").css("width", "21.5em");
+     }
+});
+
+$("#execBtn").click(function(){
+
+    let clientId = $("#clientId").val();
+    let type = $("#type").val();
+    let async = $("#async")[0].checked;
+    let timeout = $("#timeout").val();
+    let jobId = $("#jobId").val();
+    let body = $("#body").val();
+
+    if (body == null || body == "") {
+        alert("请输入命令后执行！");
+        return;
+    }
+
+    let postData = {
+        "clientId": clientId,
+        "cmd": {
+            "head": {
+                "type": type,
+                "timeout": timeout,
+                "jobId": jobId
+            },
+            "body": body
+        }
+    }
+
+    let targetUrl = "cmd/sync";
+    if (async == true) {
+        targetUrl = "cmd/async";
+    }
+
+    $.ajax({
+        contentType: "application/json",
+        type: "post",
+        data: JSON.stringify(postData),
+        url: targetUrl,
+        dataType: "json",
+        success: function(data){
+            if (data.code != 200) {
+                alert(data.msg);
+            } else {
+                let text = "";
+                for (i in data.data) {
+                    text += "\n==========";
+                    let item = data.data[i];
+                    let clientId = item.clientId;
+                    text += "\nclientId: " + clientId;
+                    //异步执行的时候才有
+                    if (item.jobId != null && item.jobId != "") {
+                        text += "\njobId: " + item.jobId;
+                    }
+                    if (item.send != null && item.send != "") {
+                        text += "\nsend: " + item.send;
+                    }
+
+                    //同步执行的时候才有
+                    let result = item.cmdResult;
+                        if (result != null) {
+                        text += "\njobId: " + result.jobId;
+                        if (result.isTimeout != null && result.isTimeout != "") {
+                            text += "\nisTimeout: " + result.isTimeout;
+                        }
+                        text += "\n-----------";
+                        if (result.stdout != null && result.stdout != "") {
+                            text += "\nstdout: \n" + result.stdout;
+                        }
+                        if (result.stderr != null && result.stderr != "") {
+                            text += "\n-----------";
+                            text += "\nstderr: \n" + result.stderr;
+                        }
+                    }
+                }
+
+                $("#resultCon").text(text);
+            }
+        }
+    });
+
+});
+
+$("#rltBtn").click(function(){
+
+    let jobId = $("#rltJobId").val();
+    let targetUrl = "cmd/asyncResult/" + jobId;
+
+    $.ajax({
+        type: "get",
+        url: targetUrl,
+        dataType: "json",
+        success: function(data){
+            if (data.code != 200) {
+                alert(data.msg);
+            } else {
+                let text = "";
+                for (i in data.data) {
+                    text += "\n==========";
+                    let item = data.data[i];
+                    let clientId = item.clientId;
+                    text += "\nclientId: " + clientId;
+                    //异步执行的时候才有
+                    if (item.jobId != null && item.jobId != "") {
+                        text += "\njobId: " + item.jobId;
+                    }
+                    if (item.send != null && item.send != "") {
+                        text += "\nsend: " + item.send;
+                    }
+
+                    //同步执行的时候才有
+                    let result = item.cmdResult;
+                        if (result != null) {
+                        text += "\njobId: " + result.jobId;
+                        if (result.isTimeout != null && result.isTimeout != "") {
+                            text += "\nisTimeout: " + result.isTimeout;
+                        }
+                        text += "\n-----------";
+                        if (result.stdout != null && result.stdout != "") {
+                            text += "\nstdout: \n" + result.stdout;
+                        }
+                        if (result.stderr != null && result.stderr != "") {
+                            text += "\n-----------";
+                            text += "\nstderr: \n" + result.stderr;
+                        }
+                    }
+                }
+
+                $("#resultCon").text(text);
+            }
+        }
+    });
+
+});
+</script>
+
+</html>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- 系统输出  std_out, err_out -->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d %p %C{1.} [%t] %L - %m%n"/>
+        </Console>
+
+        <File name="log" fileName="logs/all.log" append="true">
+            <PatternLayout pattern="%d %p %C{1.} [%t] %L - %m%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="log"/>
+        </Root>
+    </Loggers>
+</Configuration>
