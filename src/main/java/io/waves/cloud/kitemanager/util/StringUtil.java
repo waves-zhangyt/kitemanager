@@ -5,6 +5,7 @@
 package io.waves.cloud.kitemanager.util;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.UUID;
 
 /**
@@ -24,6 +25,14 @@ public class StringUtil {
     public static byte[] getUtf8Byte(String text) {
         try {
             return text.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String encodeUrlWithUtf8(String text) {
+        try {
+            return URLEncoder.encode(text, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException(e);
         }

@@ -7,8 +7,10 @@ package io.waves.cloud.kitemanager.controller;
 import io.waves.cloud.kitemanager.ro.ResultRo;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,6 +32,13 @@ public class MockController {
             }
 
             return "sleep " + seconds + " seconds over";
+        });
+    }
+
+    @RequestMapping("postForm")
+    public ResultRo postForm(@RequestParam("a") String a, @RequestParam("b") int b) {
+        return ResultRo.process(() -> {
+            return Arrays.asList(new Object[]{a, b});
         });
     }
 

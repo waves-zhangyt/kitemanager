@@ -22,7 +22,6 @@ server:
 logging:
   level:
     root: "INFO"
-    io.waves.cloud.kitemanager.websocket.KiteWebSocketEndpoint: "DEBUG"
 
 spring:
   application:

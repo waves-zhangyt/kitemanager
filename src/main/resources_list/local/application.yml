@@ -4,8 +4,9 @@ server:
   #https端口
   port: 8443
   http-port: 8899
+  context-path: "/kite"
   ssl:
-    key-store: "classpath:undertow.jks"
+    key-store: "classpath:private_key.p12"
     key-store-password: "000000"
     #keyStoreType: "PKCS12" #默认标准
   undertow:
@@ -21,10 +22,11 @@ server:
 logging:
   level:
     root: "INFO"
+    io.waves.cloud.kitemanager.websocket.KiteWebSocketEndpoint: "DEBUG"
 
 spring:
   application:
-    name: "kitemanager"
+    name: "kite-manager"
 
 management:
   port: 18899

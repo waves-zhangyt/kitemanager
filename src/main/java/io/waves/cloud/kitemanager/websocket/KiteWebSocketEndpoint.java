@@ -169,7 +169,7 @@ public class KiteWebSocketEndpoint {
      */
     public static boolean sendCmd(String clientId, Cmd cmd) {
         try {
-            logger.debug("执行命令：clientid {}, cmd {}", clientId, cmd);
+            logger.debug("发送消息：clientid {}, cmd {}", clientId, cmd);
             synchronized (endpointMap) {
                 if (!endpointMap.containsKey(clientId)) {
                     throw new RuntimeException("客户端连接不存在");
