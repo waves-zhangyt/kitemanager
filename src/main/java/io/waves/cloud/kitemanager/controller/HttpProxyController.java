@@ -149,13 +149,13 @@ public class HttpProxyController {
         } catch (Exception e) {
             sendErrorMessage(response, 400, e.getMessage());
             return;
-        }finally {
+        } finally {
             CmdResultSyncer.clearJob(jobId);
         }
 
         //有错误信息返回，直接返回给调用方
         if (!StringUtil.isEmpty(cmdResult.getStderr())) {
-            sendErrorMessage(response, 301, cmdResult.getStderr());
+            sendErrorMessage(response, 401, cmdResult.getStderr());
             return;
         }
 
