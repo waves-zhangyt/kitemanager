@@ -4,6 +4,7 @@
  */
 package io.waves.cloud.kitemanager.conf;
 
+import io.undertow.UndertowOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
 import org.springframework.boot.context.embedded.undertow.UndertowBuilderCustomizer;
@@ -27,7 +28,10 @@ public class UndertowConfiguration {
     @Bean
     public EmbeddedServletContainerFactory servletContainer() {
         UndertowEmbeddedServletContainerFactory undertowFactory = new UndertowEmbeddedServletContainerFactory();
-        undertowFactory.addBuilderCustomizers((UndertowBuilderCustomizer) builder -> builder.addHttpListener(httpPort, "0.0.0.0"));
+        undertowFactory.addBuilderCustomizers((UndertowBuilderCustomizer) builder -> {
+            builder.addHttpListener(httpPort, "0.0.0.0");
+            builder.setServerOption(UndertowOptions.RECORD_REQUEST_START_TIME, true);
+        });
         return undertowFactory;
     }
 
