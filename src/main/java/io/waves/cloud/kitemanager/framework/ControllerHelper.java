@@ -48,11 +48,11 @@ public class ControllerHelper {
             List<Object> argsList = Arrays.asList(args);
             try {
                 Object obj = pjp.proceed(args);
-                logger.info("请求 {}, 执行 {}, 参数 {}, 用时 {}ms, 返回结果: {}", uri, pjp.getSignature(), argsList,
+                logger.debug("请求 {}, 执行 {}, 参数 {}, 用时 {}ms, 返回结果: {}", uri, pjp.getSignature(), argsList,
                         System.currentTimeMillis() - start, obj);
                 return obj;
             } catch(Throwable throwable) {
-                logger.info("请求 {}, 执行 {}, 参数 {}, 用时 {}ms, 出现异常", uri, pjp.getSignature(), argsList,
+                logger.debug("请求 {}, 执行 {}, 参数 {}, 用时 {}ms, 出现异常", uri, pjp.getSignature(), argsList,
                         System.currentTimeMillis() - start);
                 throw new RuntimeException(throwable);
             }
@@ -64,10 +64,10 @@ public class ControllerHelper {
         List<Object> argsList = Arrays.asList(args);
         try {
             returnObj =  pjp.proceed(args);
-            logger.info("请求 {}, 参数 {} 用时 {}ms，返回结果: {}", uri, argsList, System.currentTimeMillis() - start,
+            logger.debug("请求 {}, 参数 {} 用时 {}ms，返回结果: {}", uri, argsList, System.currentTimeMillis() - start,
                     JSON.toJSONString(returnObj));
         } catch (Throwable throwable) {
-            logger.info("请求 {}, 参数 {} 用时 {}ms, 出现异常", uri, argsList, System.currentTimeMillis() - start);
+            logger.debug("请求 {}, 参数 {} 用时 {}ms, 出现异常", uri, argsList, System.currentTimeMillis() - start);
             returnObj = handlerException(pjp, throwable);
         }
 

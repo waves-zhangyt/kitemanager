@@ -85,23 +85,27 @@ public class KiteWebSocketEndpoint {
         //获取到clientIPv4
         this.clientIPv4 = ipv4.get(0);
 
+        boolean clientIdConflict = false;
         synchronized (endpointMap) {
-            //判断id是否有重复
             if (endpointMap.containsKey(clientId)) {
-                Cmd cmd = new Cmd(CmdTypes.res_error, "客户端id重复");
-                try {
-                    session.getBasicRemote().sendText(cmd.toJSONString());
-                    session.close();
-                } catch (IOException e) {
-                    logger.error("发送信息出错 {}", cmd, e);
-                }
-                return;
+                clientIdConflict = true;
             }
-
-            //加入维护map
-            logger.info("接收一个连接 clientId: {}", clientId);
-            this.clientId = clientId;
-            endpointMap.put(clientId, this);
+            else {
+                //加入维护map
+                logger.info("接收一个连接 clientId: {}", clientId);
+                this.clientId = clientId;
+                endpointMap.put(clientId, this);
+            }
+        }
+        if (clientIdConflict) {
+            Cmd cmd = new Cmd(CmdTypes.res_error, "客户端id重复");
+            try {
+                session.getBasicRemote().sendText(cmd.toJSONString());
+                session.close();
+            } catch (IOException e) {
+                logger.error("发送信息出错 {}", cmd, e);
+            }
+            return;
         }
 
         Cmd cmd = new Cmd(CmdTypes.res_ok, "连接manager成功");
@@ -114,9 +118,9 @@ public class KiteWebSocketEndpoint {
 
     @OnClose
     public void onClose() {
-
         synchronized (endpointMap) {
-            endpointMap.remove(clientId);
+            if (clientId != null)
+                endpointMap.remove(clientId);
         }
 
         logger.info("一条连接关闭 clientId: {}", clientId);
@@ -174,8 +178,8 @@ public class KiteWebSocketEndpoint {
                 if (!endpointMap.containsKey(clientId)) {
                     throw new RuntimeException("客户端连接不存在");
                 }
-                endpointMap.get(clientId).getSession().getBasicRemote().sendText(cmd.toJSONString());
             }
+            endpointMap.get(clientId).getSession().getBasicRemote().sendText(cmd.toJSONString());
         } catch (IOException e) {
             logger.error("发送命令出错 clientId {}, cmd {}", clientId, cmd, e);
             return false;
