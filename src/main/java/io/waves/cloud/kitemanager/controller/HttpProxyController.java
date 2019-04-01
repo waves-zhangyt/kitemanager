@@ -159,8 +159,16 @@ public class HttpProxyController {
             return;
         }
 
-        //设置返回结果头信息
+        //获取返回结果
         Map<String, Object> resultMap = (Map<String, Object>) JSONUtil.decodeJSONString(cmdResult.getStdout(), Map.class);
+
+        //设置返回结果状态码
+        Integer responseCode = (Integer) resultMap.get("responseCode");
+        if (responseCode != null) {
+            response.setStatus(responseCode);
+        }
+
+        //设置返回结果头信息
         Map<String, Object> resultHeaders = JSONUtil.decodeJSONString((String)resultMap.get("headers"));
         for (Map.Entry<String,Object> entry : resultHeaders.entrySet()) {
             if (entry.getValue() != null) {
