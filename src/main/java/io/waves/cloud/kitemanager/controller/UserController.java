@@ -1,3 +1,7 @@
+/**
+ *  Created By ytzhang0828@qq.com
+ *  Use of this source code is governed by a Apache-2.0 LICENSE
+ */
 package io.waves.cloud.kitemanager.controller;
 
 import io.waves.cloud.kitemanager.db.User;
@@ -15,6 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+/**
+ * user about api controller
+ * @author ytzhang0828@qq.com
+ */
 @RestController
 @RequestMapping("user")
 public class UserController {

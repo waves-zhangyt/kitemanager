@@ -1,8 +1,16 @@
+/**
+ *  Created By ytzhang0828@qq.com
+ *  Use of this source code is governed by a Apache-2.0 LICENSE
+ */
 package io.waves.cloud.kitemanager.util;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 
+/**
+ * digest util for md5 and sha
+ * @author ytzhang0828@qq.com
+ */
 public class DigestUtil {
 
     /** md5算法 */

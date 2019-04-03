@@ -1,3 +1,7 @@
+/**
+ *  Created By ytzhang0828@qq.com
+ *  Use of this source code is governed by a Apache-2.0 LICENSE
+ */
 package io.waves.cloud.kitemanager.controller;
 
 import io.waves.cloud.kitemanager.db.OpenApiApp;

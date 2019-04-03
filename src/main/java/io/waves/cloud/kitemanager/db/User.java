@@ -7,7 +7,7 @@ package io.waves.cloud.kitemanager.db;
 import java.util.Date;
 
 /**
- * 用户 domain
+ * user domain
  * @author ytzhang0828@qq.com
  */
 public class User {

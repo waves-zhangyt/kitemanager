@@ -1,7 +1,15 @@
+/**
+ *  Created By ytzhang0828@qq.com
+ *  Use of this source code is governed by a Apache-2.0 LICENSE
+ */
 package io.waves.cloud.kitemanager.db;
 
 import java.util.Date;
 
+/**
+ * open api domain
+ * @author ytzhang0828@qq.com
+ */
 public class OpenApiApp {
 
     private Integer id;

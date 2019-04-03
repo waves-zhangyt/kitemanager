@@ -52,7 +52,7 @@ public class DbInitConfiguration {
      * 创建 open_api_app 表
      * <pre>
      *     初始化数据
-     *     insert into open_api_app(appId, secret, uris, createTime) values('yt', 'yt', '', now())
+     *     insert into open_api_app(appId, secret, uris, createTime) values('admin', 'admin', '', now())
      *     todo, open all uri to echo app right now, may improve the feature in future.
      * </pre>
      */
@@ -65,7 +65,8 @@ public class DbInitConfiguration {
                 " createTime datetime," +
                 " status int default 1" +
                 " );" +
-                " create index appId on open_api_app (appId);";
+                " create index appId on open_api_app (appId);" +
+                " insert into open_api_app(appId, secret, uris, createTime) values('admin', 'admin', '', now());";
         createTable(sql);
     }
 
@@ -73,7 +74,7 @@ public class DbInitConfiguration {
      * 创建表
      * <pre>
      *     可用如下语句初始化一条数据
-     *     insert into user(name, password, username, createTime) values('yt', 'yt', 'yt', now());
+     *     insert into user(name, password, username, createTime) values('admin', 'admin', 'admin', now());
      * </pre>
      */
     public void createTableUser() {
@@ -85,7 +86,8 @@ public class DbInitConfiguration {
                 " createTime datetime," +
                 " status int default 1" +
                 " );" +
-                " create index name on user (name);";
+                " create index name on user (name);" +
+                " insert into user(name, password, username, createTime) values('admin', 'admin', 'admin', now());";
         createTable(sql);
     }
 
