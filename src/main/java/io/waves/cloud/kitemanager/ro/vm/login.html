@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
+    <title>Kite Manager</title>
+    <script src="../jquery-3.3.1.min.js"></script>
+    <script src="../kitemanager.js"></script>
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+        div {
+            padding: 0.2em;
+        }
+
+        input[type='text'] {
+            margin-top: 0.5em; width: 15em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        input[type='password'] {
+            margin-top: 0.5em; width: 15em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        ul {
+            padding-left: 0em;
+        }
+        li {
+            cursor: pointer;
+            list-style: none;
+            margin: 0.25em;
+        }
+        li span {
+            display: inline-block;
+            width: 4.5em;
+        }
+        li input[type='button'] {
+            width: 3em;
+            height: 1.2em;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+<div align="center" style="padding: 0px; margin: 0px;">
+    <div id="mainCon" style="text-align: left; width: 60em; padding: 0.3em; margin: 0px; background-color: lavender;">
+        <h2>Kite Manager</h2>
+        <hr>
+
+        <!-- 登录框 -->
+        <div>
+            <ul>
+                <input type="hidden" id="priUrl" value="$!{priUrl}">
+                <li><span>用户名：</span><input id="name" type="text"></li>
+                <li><span>密码：</span><input id="password" type="password"></li>
+                <li><span> </span><input id="loginBtn" style="margin-top: 0.7em;" type="button" value="登录"></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script>
+    //适配移动端
+    $(document).ready(function(){
+         if(existsQueryString("m") == true) {
+             $("#mainCon").css("width", "21.5em");
+         }
+    });
+
+    $("#loginBtn").click(function(){
+        var name = $("#name").val();
+        var password = $("#password").val();
+        var priUrl = $("#priUrl").val();
+        $.ajax({
+            type: "post",
+            data: { "name" : name, "password": password, "priUrl": priUrl },
+            url: "login",
+            dataType: "json",
+            success: function(data){
+                if (data.code != 200) {
+                    alert(data.msg);
+                } else {
+                    window.location = data.data;
+                }
+            }
+        });
+    });
+</script>
+
+</html>

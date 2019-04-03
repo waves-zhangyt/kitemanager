@@ -28,9 +28,37 @@ logging:
 spring:
   application:
     name: "kite-manager"
+  #h2 database console
+  h2.console.enabled: true
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: "jdbc:h2:file:./db/kitemanager"
+    username: "yt"
+    password: "yt"
+    test-while-idle: true
+    test-on-borrow: true
+    test-on-return: false
+    validation-query: "SELECT 1 FROM DUAL"
+    time-between-eviction-runs-millis: 10000
+    min-evictable-idle-time-millis: 10000
+    max-evictable-idle-time-millis: 30000
+    initial-size: 5
+    max-active: 200
+    max-wait: 60000
+    min-idle: 1
+
+mybatis.config-location: classpath:mybatis-config.xml
 
 management:
   port: 18899
   context-path: "/admin"
   security:
     enabled: false
+
+#kite mangager custom setting
+kitemanager:
+  # is enable AuthInterceptor
+  authEnabled: false
+  openApiApp:
+    # the open api timestamp timeout interval seconds
+    tokenInterval: 30

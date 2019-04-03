@@ -29,6 +29,12 @@ public class ResultRo<T> {
         this.msg = msg;
     }
 
+    public ResultRo(Integer code, String msg, T data) {
+        this.code = code;
+        this.msg = msg;
+        this.data = data;
+    }
+
     public interface Processor {
         Object process();
     }
