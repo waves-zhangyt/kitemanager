@@ -1,3 +1,9 @@
+0.6.1-SNAPSHOT
+1.增加jvm启动参数在判断ipv6的ip被选择为agentId时，强制使用connection url中第一个ipv4地址，否则需要在启动KiteAgent的时候,自行指定。
+    -DforceFirstIpv4WhenIpv6=true
+2.登录页面密码框回车可提交登录
+3.增加登出入口
+
 0.6.0-SNAPSHOT
 1.更改本地日志日期格式，增加access日志返回结果和耗时
 2.增加登录及认证

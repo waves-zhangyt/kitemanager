@@ -70,7 +70,7 @@
          }
     });
 
-    $("#loginBtn").click(function(){
+    function login() {
         var name = $("#name").val();
         var password = $("#password").val();
         var priUrl = $("#priUrl").val();
@@ -87,6 +87,19 @@
                 }
             }
         });
+    }
+
+    $("#loginBtn").click(function(){
+        login();
+    });
+
+
+    $("#password").keyup(function (evt) {
+        var e = evt ? evt : window.event;
+        var keyCode = e.keyCode ? e.keyCode : e.which;
+        if(keyCode == 13) {
+            login();
+        }
     });
 </script>
 

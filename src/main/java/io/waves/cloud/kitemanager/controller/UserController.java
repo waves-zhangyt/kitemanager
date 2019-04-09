@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * user about api controller
@@ -58,6 +59,16 @@ public class UserController {
         }
 
         return new ResultRo(400, "认证错误");
+    }
+
+    @RequestMapping("logout")
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        request.getSession().invalidate();
+        try {
+            response.sendRedirect(contextPath + "/");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

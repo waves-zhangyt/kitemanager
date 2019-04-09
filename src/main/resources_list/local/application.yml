@@ -58,7 +58,7 @@ management:
 #kite mangager custom setting
 kitemanager:
   # is enable AuthInterceptor
-  authEnabled: false
+  authEnabled: true
   openApiApp:
     # the open api timestamp timeout interval seconds
     tokenInterval: 30

@@ -61,22 +61,12 @@ public class KiteWebSocketEndpoint {
         List<String> ipv4 = params.get("ipv4");
         if (clientIds == null || clientIds.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供id");
-            try {
-                session.getBasicRemote().sendText(cmd.toJSONString());
-                session.close();
-            } catch (IOException e) {
-                logger.error("发送信息出错 {}", cmd, e);
-            }
+            sendConnectionErroMessage(cmd);
             return;
         }
         if (ipv4 == null || ipv4.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供ip");
-            try {
-                session.getBasicRemote().sendText(cmd.toJSONString());
-                session.close();
-            } catch (IOException e) {
-                logger.error("发送信息出错 {}", cmd, e);
-            }
+            sendConnectionErroMessage(cmd);
             return;
         }
 
@@ -84,6 +74,21 @@ public class KiteWebSocketEndpoint {
         String clientId = clientIds.get(0);
         //获取到clientIPv4
         this.clientIPv4 = ipv4.get(0);
+
+        // when ipv6
+        if (clientId.length() == 17 && clientId.indexOf(":") != -1) { //ipv6 guest, may improve later
+            // force use the first ipv4 from the connection request url
+            // when use, the client log's clienId is no longer used, so feel free with it.
+            String forceFirstIpv4WhenIpv6 = System.getProperty("forceFirstIpv4WhenIpv6");
+            if (!StringUtil.isEmpty(forceFirstIpv4WhenIpv6) && Boolean.parseBoolean(forceFirstIpv4WhenIpv6)) { // setting
+                int index = clientIPv4.indexOf(",");
+                if (index == -1) {
+                    clientId = clientIPv4;
+                } else {
+                    clientId = clientIPv4.substring(0, index);
+                }
+            }
+        }
 
         boolean clientIdConflict = false;
         synchronized (endpointMap) {
@@ -99,18 +104,22 @@ public class KiteWebSocketEndpoint {
         }
         if (clientIdConflict) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端id重复");
-            try {
-                session.getBasicRemote().sendText(cmd.toJSONString());
-                session.close();
-            } catch (IOException e) {
-                logger.error("发送信息出错 {}", cmd, e);
-            }
+            sendConnectionErroMessage(cmd);
             return;
         }
 
         Cmd cmd = new Cmd(CmdTypes.res_ok, "连接manager成功");
         try {
             session.getBasicRemote().sendText(cmd.toJSONString());
+        } catch (IOException e) {
+            logger.error("发送信息出错 {}", cmd, e);
+        }
+    }
+
+    private void sendConnectionErroMessage(Cmd cmd) {
+        try {
+            session.getBasicRemote().sendText(cmd.toJSONString());
+            session.close();
         } catch (IOException e) {
             logger.error("发送信息出错 {}", cmd, e);
         }
