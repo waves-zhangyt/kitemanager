@@ -51,12 +51,19 @@ public class AgentUpdateController {
         }
     }
 
-    /** 过去最新版agent版本号 */
+    /**
+     * 过去最新版agent版本号
+     * production name rule "kiteagent-v0.7.0"
+     */
     @ResponseBody
     @RequestMapping(value = "latestAgentVersion", method = RequestMethod.GET)
     public String latestAgentVersion() {
         File prodDir = new File("agent-productions");
         String[] names = prodDir.list();
+
+        if (names.length == 0) {
+            return null;
+        }
 
         return getMaxVersionName(names);
     }

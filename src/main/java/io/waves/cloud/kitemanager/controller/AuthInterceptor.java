@@ -56,7 +56,9 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         String[] whiteUris = new String[] {
                 contextPath + "/user/login.html",
                 contextPath + "/user/login",
-                contextPath + "/error"
+                contextPath + "/error",
+                contextPath + "/update/latestAgentVersion",
+                contextPath + "/update/latestAgent"
         };
         for (String item : whiteUris) {
             if (item.equals(uri)) return true;
