@@ -53,7 +53,7 @@ public class AgentUpdateController {
 
     /**
      * 过去最新版agent版本号
-     * production name rule "kiteagent-v0.7.0"
+     * production name rule "kiteagent-v0.7.0" in agent-productions dir
      */
     @ResponseBody
     @RequestMapping(value = "latestAgentVersion", method = RequestMethod.GET)
