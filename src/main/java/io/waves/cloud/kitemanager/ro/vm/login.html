@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
     <title>Kite Manager</title>
+    <link href="../kitemanager.css" rel="stylesheet" type="text/css" />
     <script src="../jquery-3.3.1.min.js"></script>
     <script src="../kitemanager.js"></script>
     <style>
@@ -57,12 +58,16 @@
                 <input type="hidden" id="priUrl" value="$!{priUrl}">
                 <li><span>用户名：</span><input id="name" type="text"></li>
                 <li><span>密码：</span><input id="password" type="password"></li>
-                <li><span> </span><input id="loginBtn" style="margin-top: 0.7em;" type="button" value="登录"></li>
+                <li><span> </span><input id="loginBtn" style="margin-top: 0.7em; height: 1.8em;" type="button" value="登录"></li>
             </ul>
         </div>
 
+        <div style="height: 3em;"></div>
+
     </div>
 </div>
+
+#parse("io/waves/cloud/kitemanager/ro/vm/foot.html")
 </body>
 
 <script>

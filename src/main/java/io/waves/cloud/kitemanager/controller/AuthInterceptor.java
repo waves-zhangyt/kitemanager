@@ -64,6 +64,17 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
             if (item.equals(uri)) return true;
         }
 
+        //1.1 admin role endpoint fliter
+        User user = (User) request.getSession().getAttribute("user");
+        // todo fine-gained auth controller may coming later
+        if(uri.startsWith("/kite/admin/")) {
+            if (user == null || !user.getRole().equals("admin")) {
+                //跳转到登录页面
+                response.sendRedirect(contextPath + "/user/login.html?priUrl=" + uri);
+                return false;
+            }
+        }
+
         // 2.open api token region
         String appId = request.getHeader("kAppId");
         String appToken = request.getHeader("kAppToken");
@@ -74,11 +85,10 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         }
 
         // 3.login region, use session just now
-        User user = (User) request.getSession().getAttribute("user");
         if (user == null) {
             //跳转到登录页面
             response.sendRedirect(contextPath + "/user/login.html?priUrl=" + uri);
-            return true;
+            return false;
         }
 
         return true;

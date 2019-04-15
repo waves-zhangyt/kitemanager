@@ -1,7 +1,7 @@
 #operatorListCon {
     background-color:white;
-    pading-top: 0em;
-    padding-bottom: 0.3em;
+    padding-top: 0.2em;
+    padding-bottom: 0.5em;
     display:none;
     position: absolute;
     z-index:900;
@@ -22,4 +22,21 @@
 
 #mainCon {
     text-align: left; width: 60em; padding: 0.3em; margin: 0px; background-color: #f1f8ff;
+}
+
+#footCon {
+	clear: both;
+	margin: 0px;
+	padding: 0px;
+}
+#footCon #foot {
+	width: 60em;
+	text-align: center;
+	border-top: 1px solid #e1e4e8!important;
+	padding-top: 0.5em;
+	padding-bottom: 0.5em;
+	background-color: #f1f8ff;
+	padding-left: 5px;
+	padding-right: 5px;
+	color: gray;
 }
