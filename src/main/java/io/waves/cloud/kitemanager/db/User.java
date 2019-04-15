@@ -19,6 +19,8 @@ public class User {
     private Date createTime;
     private Integer status;
 
+    private String role;
+
     public Integer getId() {
         return id;
     }
@@ -67,6 +69,14 @@ public class User {
         this.status = status;
     }
 
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -76,6 +86,7 @@ public class User {
                 ", username='" + username + '\'' +
                 ", createTime=" + createTime +
                 ", status=" + status +
+                ", role='" + role + '\'' +
                 '}';
     }
 }

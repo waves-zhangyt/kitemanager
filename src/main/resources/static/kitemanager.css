@@ -1,0 +1,25 @@
+#operatorListCon {
+    background-color:white;
+    pading-top: 0em;
+    padding-bottom: 0.3em;
+    display:none;
+    position: absolute;
+    z-index:900;
+    border:1px solid #108AC6;
+    width: 5em;
+    text-align:left;
+}
+#operatorListCon div {
+    margin-top: 0.2em;
+    padding: 0em;
+}
+#operatorListCon a {
+    -webkit-text-size-adjust:none;
+    font-size: 0.95em;
+    color: #108AC6;
+    text-decoration: none;
+}
+
+#mainCon {
+    text-align: left; width: 60em; padding: 0.3em; margin: 0px; background-color: #f1f8ff;
+}

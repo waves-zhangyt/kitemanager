@@ -86,8 +86,10 @@ public class DbInitConfiguration {
                 " createTime datetime," +
                 " status int default 1" +
                 " );" +
-                " create index name on user (name);" +
-                " insert into user(name, password, username, createTime) values('admin', 'admin', 'admin', now());";
+                " create unique index name on user (name);" +
+                " insert into user(name, password, username, createTime) values('admin', 'admin', 'admin', now());" +
+                " alter table user add role varchar(20);" +
+                " update user set role = 'admin' where name = 'admin';";
         createTable(sql);
     }
 

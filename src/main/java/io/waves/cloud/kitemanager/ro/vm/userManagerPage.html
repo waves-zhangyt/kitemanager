@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
+    <title>Kite Manager</title>
+    <link href="../kitemanager.css" rel="stylesheet" type="text/css" />
+    <script src="../jquery-3.3.1.min.js"></script>
+    <script src="../kitemanager.js"></script>
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+        div {
+            padding: 0.2em;
+        }
+
+        input[type='text'] {
+            margin-top: 0.5em; width: 15em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        input[type='password'] {
+            margin-top: 0.5em; width: 15em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        ul {
+            padding-left: 0em;
+        }
+        li {
+            list-style: none;
+            margin: 0.25em;
+        }
+        li span {
+            display: inline-block;
+            width: 8.5em;
+        }
+        li input[type='button'] {
+            width: 3em;
+            height: 1.2em;
+            font-size: 1.1em;
+        }
+
+        #userListTable span {
+            padding-left: 0.2em;
+        }
+        #userListTableHead span {
+            font-weight: bold;
+            /*background-color: gray;*/
+            /*color: white;*/
+            border-bottom: 1px solid gray;
+            padding-left: 0.2em;
+        }
+    </style>
+</head>
+<body>
+#parse("io/waves/cloud/kitemanager/ro/vm/head.html")
+
+<div align="center" style="padding: 0px; margin: 0px;">
+    <div id="mainCon" style="">
+        <hr>
+
+        <!-- 添加用户 -->
+        <div>
+            <ul>
+                <li><span><b>添加用户</b></span><span></span></li>
+                <li><span>登录名：</span><input id="name" type="text"></li>
+                <li><span>昵称：</span><input id="username" type="text"></li>
+                <li><span>密码：</span><input id="password" type="password"></li>
+                <li style="margin-top: 0.7em;">
+                    <span>角色：</span>
+                    <select id="role" style="height: 1.5em;">
+                        <option value="user">user</option><option>admin</option>
+                    </select>
+                </li>
+                <li>
+                    <span> </span>
+                    <input id="addBtn" style="margin-top: 0.7em;" type="button" value="添加">
+                    <span id="msg" style="display: inline-block; margin-left: 1em; color: green;"></span>
+                </li>
+                <script>
+                    $("#addBtn").click(function () {
+                        var name = $("#name").val();
+                        var password = $("#password").val();
+                        var username = $("#username").val();
+                        var role = $("#role").val();
+                        $.ajax({
+                            type: "post",
+                            data: { "name" : name, "password": password, "username": username, "role": role },
+                            url: "addUser",
+                            dataType: "json",
+                            success: function(data){
+                                if (data.code != 200) {
+                                    alert(data.msg);
+                                } else {
+                                    alert("添加用户成功");
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                </script>
+            </ul>
+
+        </div>
+
+        <div>
+            <ul id="userListTable">
+                <li style="margin-bottom: 0.6em;"><span><b>用户列表</b></span></li>
+                <li id="userListTableHead"><span>用户名</span><span>用户昵称</span><span>角色</span><span>操作</span></li>
+                #foreach( $item in $userList )
+                <li><span>${item.name}</span><span>${item.username}</span><span>${item.role}</span>
+                    <span>#if ($item.role != "admin") <a href="javascript: delUser($item.id);">删除</a> #else - #end</span>
+                </li>
+                #end
+            </ul>
+            <script>
+                function delUser(userId) {
+                    $.ajax({
+                        type: "post",
+                        data: { "id" : userId },
+                        url: "delUser",
+                        dataType: "json",
+                        success: function(data){
+                            if (data.code != 200) {
+                                alert(data.msg);
+                            } else {
+                                alert("删除用户成功");
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+            </script>
+
+        </div>
+
+    </div>
+</div>
+</body>
+
+<script>
+    //适配移动端
+    $(document).ready(function(){
+        if(existsQueryString("m") == true) {
+            $("#mainCon").css("width", "21.5em");
+        }
+    });
+</script>
+
+</html>

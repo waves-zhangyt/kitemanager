@@ -35,6 +35,7 @@ public class ManagerController {
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("agentList", treeMap);
+        velocityContext.put("user", request.getSession().getAttribute("user"));
         return VelocityUtil.merge(velocityContext, "io/waves/cloud/kitemanager/ro/vm/index.html", "UTF-8");
 
     }
@@ -69,11 +70,13 @@ public class ManagerController {
 
     /** 进入命令执行页 */
     @RequestMapping(value = "execPage", method = RequestMethod.GET)
-    public String execPage(HttpServletResponse response, @RequestParam(value = "clientId", required = false) String clientId) {
+    public String execPage(HttpServletRequest request, HttpServletResponse response,
+                           @RequestParam(value = "clientId", required = false) String clientId) {
         response.setContentType("text/html;charset=UTF-8");
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("clientId", clientId);
+        velocityContext.put("user", request.getSession().getAttribute("user"));
         return VelocityUtil.merge(velocityContext, "io/waves/cloud/kitemanager/ro/vm/exec.html", "UTF-8");
     }
 

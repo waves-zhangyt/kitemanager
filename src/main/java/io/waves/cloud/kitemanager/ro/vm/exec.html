@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
     <title>Kite Manager</title>
+    <link href="kitemanager.css" rel="stylesheet" type="text/css" />
     <script src="jquery-3.3.1.min.js"></script>
     <script src="kitemanager.js"></script>
     <style>
@@ -39,17 +40,15 @@
 
 </head>
 <body>
-<div align="center" style="padding: 0px; margin: 0px;">
-<div id="mainCon" style="text-align: left; width: 60em; padding: 0.3em; margin: 0px; background-color: lavender;">
+#parse("io/waves/cloud/kitemanager/ro/vm/head.html")
 
-<span style="display: inline-block; float: right; width: 10em; margin-top: 1.5em; text-align: right; margin-right: 0.7em;">
-    <a href="/kite/">回到列表页</a>
-</span>
-<h2>Kite Manager</h2>
+<div align="center" style="padding: 0px; margin: 0px;">
+<div id="mainCon" style="">
+<!--<h2>Kite Manager</h2>-->
 
 <hr>
 
-<div>
+<div style="margin-top: 1em;">
     <span>执行目标：</span>
     <span><input type="text" id="clientId" placeholder="clientId 多个可用逗号隔开，可用正则匹配" value="$!{clientId}"></span>
 </div>
