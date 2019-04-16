@@ -1,5 +1,7 @@
 package io.waves.cloud.kitemanager.controller;
 
+import io.waves.cloud.kitemanager.db.OpenApiApp;
+import io.waves.cloud.kitemanager.db.OpenApiAppMapper;
 import io.waves.cloud.kitemanager.db.User;
 import io.waves.cloud.kitemanager.db.UserMapper;
 import io.waves.cloud.kitemanager.ro.ResultRo;
@@ -26,6 +28,68 @@ public class AdminController {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private OpenApiAppMapper openApiAppMapper;
+
+    @RequestMapping(value = "delApp", method = RequestMethod.POST)
+    public ResultRo delApp(@RequestParam("id") Integer id) {
+        if (id == null) {
+            return new ResultRo(400, "id不能为空");
+        }
+
+        return ResultRo.process(() -> {
+            int count = openApiAppMapper.deleteOpenApiAppById(id);
+            if (count != 1) {
+                throw new RuntimeException("删除App失败");
+            }
+            return "删除app成功";
+        });
+    }
+
+    @RequestMapping(value = "addApp", method = RequestMethod.POST)
+    public ResultRo addApp(@RequestParam("appId") String appId, @RequestParam("secret") String secret,
+                           @RequestParam("uris") String uris) {
+
+        if (StringUtil.isEmpty(appId) || StringUtil.isEmpty(secret) || StringUtil.isEmpty(uris)) {
+            return new ResultRo(400, "请填写完成信息");
+        }
+
+        return ResultRo.process(() -> {
+
+            OpenApiApp openApiApp = openApiAppMapper.getOpenApiAppByAppId(appId);
+            if (openApiApp != null) {
+                throw new RuntimeException("相同Appid已经存在");
+            }
+
+            openApiApp = new OpenApiApp();
+            openApiApp.setAppId(appId);
+            openApiApp.setSecret(secret);
+            openApiApp.setUris(uris);
+            openApiApp.setCreateTime(new Date());
+            openApiApp.setStatus(1);
+
+            int count = openApiAppMapper.insertOpenApiApp(openApiApp);
+            if (count != 1) {
+                throw new RuntimeException("添加App失败");
+            }
+
+            return "添加App成功";
+        });
+
+    }
+
+    @RequestMapping("openApiManagerPage")
+    public String openApiManagerPage(HttpServletRequest request, HttpServletResponse response) {
+        response.setContentType("text/html;charset=UTF-8");
+
+        List<OpenApiApp> appList = openApiAppMapper.getApps();
+
+        VelocityContext velocityContext = new VelocityContext();
+        velocityContext.put("user", request.getSession().getAttribute("user"));
+        velocityContext.put("appList", appList);
+        return VelocityUtil.merge(velocityContext, "io/waves/cloud/kitemanager/ro/vm/openApiManagerPage.html", "UTF-8");
+    }
 
     @RequestMapping("userManagerPage")
     public String userManagerPage(HttpServletRequest request, HttpServletResponse response) {

@@ -72,7 +72,7 @@
                 <li style="margin-top: 0.7em;">
                     <span>角色：</span>
                     <select id="role" style="height: 1.5em;">
-                        <option value="user">user</option><option>admin</option>
+                        <option value="user">user</option><option value="admin">admin</option>
                     </select>
                 </li>
                 <li>
@@ -118,6 +118,10 @@
             </ul>
             <script>
                 function delUser(userId) {
+                    if (!confirm("确定要删除吗")) {
+                        return;
+                    }
+
                     $.ajax({
                         type: "post",
                         data: { "id" : userId },

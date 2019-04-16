@@ -65,8 +65,9 @@ public class DbInitConfiguration {
                 " createTime datetime," +
                 " status int default 1" +
                 " );" +
-                " create index appId on open_api_app (appId);" +
-                " insert into open_api_app(appId, secret, uris, createTime) values('admin', 'admin', '', now());";
+                " create unique index appId on open_api_app (appId);" +
+                " insert into open_api_app(appId, secret, uris, createTime) values('admin', 'admin', '', now());" +
+                " update open_api_app set uris = '*' where appId = 'admin';";
         createTable(sql);
     }
 

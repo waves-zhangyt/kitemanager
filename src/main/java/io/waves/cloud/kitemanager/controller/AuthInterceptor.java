@@ -81,7 +81,16 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         String timestamp = request.getHeader("kTimestamp");
         if (!StringUtil.isEmpty(appId) && !StringUtil.isEmpty(appToken)
                 && !StringUtil.isEmpty(timestamp)) {
-            if (isValidToken(appId, appToken, Long.parseLong(timestamp))) return true;
+            OpenApiApp openApiApp = openApiAppMapper.getOpenApiAppByAppId(appId);
+            if (openApiApp == null) {
+                logger.warn("the appId is not exists, appId: {}", appId);
+            }
+            else if (isValidToken(openApiApp, appToken, Long.parseLong(timestamp)) && isAuthedUri(uri, openApiApp)) {
+                return true;
+            }
+            else {
+                logger.warn("invalidate appId with appToekn request happened, appId: {}, appToken: {}", appId, appToken);
+            }
         }
 
         // 3.login region, use session just now
@@ -94,32 +103,45 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
         return true;
     }
 
+    /** verify the uri with openApiApp */
+    private boolean isAuthedUri(String uri, OpenApiApp openApiApp) {
+        String uris = openApiApp.getUris();
+        if (StringUtil.isEmpty(uris)) {
+            return false;
+        }
+
+        // with all permissions
+        if (uris.equals("*")) return true;
+
+        // performance may improve later when uris is too big
+        String[] items = uris.split(",");
+        for (String item : items) {
+            if (uri.startsWith(item)) return true;
+        }
+
+        return false;
+    }
+
     /**
      * check is valid token with a md5 algorithm
-     * @param appId
+     * @param openApiApp
      * @param appToken
      * @param timestamp the time when create appToken. it's the seconds count from 1970/01/01
      */
-    private boolean isValidToken(String appId, String appToken, long timestamp) {
+    private boolean isValidToken(OpenApiApp openApiApp, String appToken, long timestamp) {
         //check timeout
         long interval = System.currentTimeMillis() / 1000 - timestamp;
         if (interval > tokenInterval) {
-            logger.debug("app token timeout: app-{}, timestamo-{}", appId, timestamp);
+            logger.debug("app token timeout: app-{}, timestamo-{}", openApiApp.getAppId(), timestamp);
             return false;
         }
 
-        OpenApiApp openApiApp = openApiAppMapper.getOpenApiAppByAppId(appId);
-        if (openApiApp == null) {
-            logger.debug("no appId {}", appId);
-            return false;
-        }
-
-        String feed = appId + "-" + openApiApp.getSecret() + "-" + timestamp;
+        String feed = openApiApp.getAppId() + "-" + openApiApp.getSecret() + "-" + timestamp;
         String feedback = DigestUtil.digestFromUtf8Text(feed, DigestUtil.ALGORITHM_MD5);
         if (feedback.equalsIgnoreCase(appToken)) {
             return true;
         } else {
-            logger.debug("appId {}, appToken {} is invalied", appId, appToken);
+            logger.debug("appId {}, appToken {} is invalied", openApiApp.getAppId(), appToken);
             return false;
         }
     }
