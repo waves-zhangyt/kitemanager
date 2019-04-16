@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=yes">
+    <title>Kite Manager</title>
+    <link href="../kitemanager.css" rel="stylesheet" type="text/css" />
+    <script src="../jquery-3.3.1.min.js"></script>
+    <script src="../kitemanager.js"></script>
+    <style>
+        body {
+            padding: 0px;
+            margin: 0px;
+        }
+        div {
+            padding: 0.2em;
+        }
+
+        input[type='text'] {
+            margin-top: 0.5em; width: 15em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        input[type='password'] {
+            margin-top: 0.5em; width: 15em; font-size: 1em;
+            border: 1px solid gray; height: 1.4em;
+        }
+        ul {
+            padding-left: 0em;
+        }
+        li {
+            list-style: none;
+            margin: 0.25em;
+        }
+        li span {
+            display: inline-block;
+            width: 8.5em;
+        }
+        li input[type='button'] {
+            width: 3em;
+            height: 1.2em;
+            font-size: 1.1em;
+        }
+
+        #userListTable {
+        }
+        #userListTable span {
+            padding-left: 0.2em;
+        }
+        #userListTableHead span {
+            font-weight: bold;
+            /*background-color: gray;*/
+            /*color: white;*/
+            padding-left: 0.2em;
+            padding-bottom: 0.4em;
+        }
+    </style>
+</head>
+<body>
+#parse("io/waves/cloud/kitemanager/ro/vm/head.html")
+
+<div align="center" style="padding: 0px; margin: 0px;">
+    <div id="mainCon" style="">
+        <hr>
+
+        <!-- 添加OpenApi App -->
+        <div>
+            <ul>
+                <li><span><b>添加App</b></span><span></span></li>
+                <li><span>AppId：</span><input id="appId" type="text"></li>
+                <li><span>Secret：</span><input id="secret" type="text"></li>
+                <li>
+                    <span>Uris：</span>
+                    <textarea id="uris" style="height: 7em; width: 66em; margin-top: 1em; margin-bottom: -0.5em; margin-left: -0.5em;"></textarea>
+                </li>
+                <!-- may enable later when needed
+                <li style="margin-top: 0.7em;">
+                    <span>状态：</span>
+                    <select id="status" style="height: 1.5em;">
+                        <option value="1">启用</option><option value="0">禁用</option>
+                    </select>
+                </li>
+                -->
+                <li>
+                    <span> </span>
+                    <input id="addBtn" style="margin-top: 0.7em; height: 1.8em;" type="button" value="添加">
+                    <span id="msg" style="display: inline-block; margin-left: 1em; color: green;"></span>
+                </li>
+                <script>
+                    $("#addBtn").click(function () {
+                        var appId = $("#appId").val();
+                        var secret = $("#secret").val();
+                        var uris = $("#uris").val();
+                        $.ajax({
+                            type: "post",
+                            data: { "appId" : appId, "secret": secret, "uris": uris },
+                            url: "addApp",
+                            dataType: "json",
+                            success: function(data){
+                                if (data.code != 200) {
+                                    alert(data.msg);
+                                } else {
+                                    alert("添加App成功");
+                                    window.location.reload();
+                                }
+                            }
+                        });
+                    });
+                </script>
+            </ul>
+
+        </div>
+
+        <div>
+            <ul id="userListTable">
+                <li style="margin-bottom: 0.6em; width: 25em;"><span style="width: 30em;"><b>App列表 (uris权限分配是前缀匹配模式,多个以英文逗号分隔)</b></span></li>
+                <li id="userListTableHead" style="border-bottom: 1px solid gray;"><span>AppId</span><span>Secret</span><span style="width: 30em;">Uris</span><span>操作</span></li>
+                #foreach( $item in $appList )
+                <li><span>${item.appId}</span><span>${item.secret}</span><span style="width: 30em;">${item.uris}</span>
+                    <span>#if ($item.role != "admin") <a href="javascript: delApp($item.id);">删除</a> #else - #end</span>
+                </li>
+                #end
+            </ul>
+            <script>
+                function delApp(id) {
+                    if (!confirm("确定要删除吗")) {
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "post",
+                        data: { "id" : id },
+                        url: "delApp",
+                        dataType: "json",
+                        success: function(data){
+                            if (data.code != 200) {
+                                alert(data.msg);
+                            } else {
+                                alert("删除App成功");
+                                window.location.reload();
+                            }
+                        }
+                    });
+                }
+            </script>
+
+        </div>
+
+        <div style="height: 3em;"></div>
+
+    </div>
+</div>
+
+#parse("io/waves/cloud/kitemanager/ro/vm/foot.html")
+</body>
+
+<script>
+    //适配移动端
+    $(document).ready(function(){
+        if(existsQueryString("m") == true) {
+            $("#mainCon").css("width", "21.5em");
+        }
+    });
+</script>
+
+</html>
