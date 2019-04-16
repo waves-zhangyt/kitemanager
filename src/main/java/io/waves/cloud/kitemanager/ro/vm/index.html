@@ -28,9 +28,11 @@
             width: 20em;
             height: 2em;
             color: blue;
-            cursor: pointer;
             list-style: none;
             margin: 0.25em;
+        }
+        #agentList li span {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -55,7 +57,7 @@
 <ul id="agentList">
     <!-- todo 加入链接进入命令执行页面 -->
 #foreach( $key in $agentList.keySet() )
-    <li title="$agentList.get($key).clientIPv4">$key</li>
+    <li title="$agentList.get($key).clientIPv4"><span>$key</span></li>
 #end
 </ul>
 
@@ -107,7 +109,7 @@
         let clientId = text;
         window.location = "execPage?clientId=" + clientId;
     };
-    $("#agentList").find("li").click(toExePate);
+    $("#agentList").find("li span").click(toExePate);
 </script>
 
 </html>
