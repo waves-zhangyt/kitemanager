@@ -64,4 +64,4 @@ kitemanager:
   openApiApp:
     # the open api timestamp timeout interval seconds
     tokenInterval: 30
-  maxClientNumber: 1
+  maxClientNumber: 20000
