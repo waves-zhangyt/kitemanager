@@ -10,11 +10,14 @@ public class KiteManangerProperties {
     /** is auth interceptor enabled */
     private boolean authEnabled;
 
+    /** the max client number can connect */
     private int maxClientNumber;
 
     @Component
     @ConfigurationProperties(prefix = "kitemanager.openApiApp")
     public static class OpenApiApp {
+
+        /** open api token timeout interval */
         private int tokenInterval;
 
         public int getTokenInterval() {
@@ -34,6 +37,11 @@ public class KiteManangerProperties {
     }
 
     private OpenApiApp openApiApp;
+
+    /** if enable connection auth */
+    private boolean connectionAuthEnabled;
+    /** connection secret, the client must be take with when connect if "connectionAuthEnabled" is true */
+    private String connectionSecret;
 
     public boolean isAuthEnabled() {
         return authEnabled;
@@ -59,12 +67,30 @@ public class KiteManangerProperties {
         this.openApiApp = openApiApp;
     }
 
+    public boolean isConnectionAuthEnabled() {
+        return connectionAuthEnabled;
+    }
+
+    public void setConnectionAuthEnabled(boolean connectionAuthEnabled) {
+        this.connectionAuthEnabled = connectionAuthEnabled;
+    }
+
+    public String getConnectionSecret() {
+        return connectionSecret;
+    }
+
+    public void setConnectionSecret(String connectionSecret) {
+        this.connectionSecret = connectionSecret;
+    }
+
     @Override
     public String toString() {
         return "KiteManangerProperties{" +
                 "authEnabled=" + authEnabled +
                 ", maxClientNumber=" + maxClientNumber +
                 ", openApiApp=" + openApiApp +
+                ", connectionAuthEnabled=" + connectionAuthEnabled +
+                ", connectionSecret='" + connectionSecret + '\'' +
                 '}';
     }
 }

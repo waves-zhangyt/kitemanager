@@ -57,10 +57,23 @@ public class KiteWebSocketEndpoint {
     public void onOpen(Session session) {
         this.session = session;
 
+        // kite manager setting
+        KiteManangerProperties kiteManangerProperties = getBean(KiteManangerProperties.class);
+
         //判断id
         Map<String, List<String>> params = session.getRequestParameterMap();
         List<String> clientIds = params.get("clientId");
         List<String> ipv4 = params.get("ipv4");
+        List<String> connectionSecret = params.get("connectionSecret");
+        if (kiteManangerProperties.isConnectionAuthEnabled()) {
+            if (connectionSecret == null || connectionSecret.isEmpty()
+                    || !connectionSecret.get(0).equals(kiteManangerProperties.getConnectionSecret())) {
+                logger.warn("illegal client try to connect, client:{}, ipv4:{}, secret:{}", clientIds, ipv4, connectionSecret);
+                Cmd cmd = new Cmd(CmdTypes.res_error, "非法连接");
+                sendConnectionErroMessage(cmd);
+                return;
+            }
+        }
         if (clientIds == null || clientIds.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供id");
             sendConnectionErroMessage(cmd);
@@ -94,7 +107,6 @@ public class KiteWebSocketEndpoint {
 
         boolean clientIdConflict = false;
         boolean maxThanMaxClientNumber = false;
-        KiteManangerProperties kiteManangerProperties = getBean(KiteManangerProperties.class);
         synchronized (endpointMap) {
             if (endpointMap.size() >= kiteManangerProperties.getMaxClientNumber()) {
                 maxThanMaxClientNumber = true;

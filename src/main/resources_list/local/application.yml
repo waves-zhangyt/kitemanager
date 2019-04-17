@@ -65,3 +65,5 @@ kitemanager:
     # the open api timestamp timeout interval seconds
     tokenInterval: 30
   maxClientNumber: 20000
+  connectionAuthEnabled: false
+  connectionSecret: hellokitemanager
