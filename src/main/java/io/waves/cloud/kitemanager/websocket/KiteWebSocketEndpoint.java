@@ -4,12 +4,14 @@
  */
 package io.waves.cloud.kitemanager.websocket;
 
+import io.waves.cloud.kitemanager.conf.KiteManangerProperties;
 import io.waves.cloud.kitemanager.ro.ClientCmdResult;
 import io.waves.cloud.kitemanager.util.ConstUtil;
 import io.waves.cloud.kitemanager.util.RedisUtil;
 import io.waves.cloud.kitemanager.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.websocket.*;
@@ -91,8 +93,13 @@ public class KiteWebSocketEndpoint {
         }
 
         boolean clientIdConflict = false;
+        boolean maxThanMaxClientNumber = false;
+        KiteManangerProperties kiteManangerProperties = getBean(KiteManangerProperties.class);
         synchronized (endpointMap) {
-            if (endpointMap.containsKey(clientId)) {
+            if (endpointMap.size() >= kiteManangerProperties.getMaxClientNumber()) {
+                maxThanMaxClientNumber = true;
+            }
+            else if (endpointMap.containsKey(clientId)) {
                 clientIdConflict = true;
             }
             else {
@@ -101,6 +108,11 @@ public class KiteWebSocketEndpoint {
                 this.clientId = clientId;
                 endpointMap.put(clientId, this);
             }
+        }
+        if (maxThanMaxClientNumber) {
+            Cmd cmd = new Cmd(CmdTypes.res_error, "the number of client is full at server end");
+            sendConnectionErroMessage(cmd);
+            return;
         }
         if (clientIdConflict) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端id重复");
@@ -195,6 +207,21 @@ public class KiteWebSocketEndpoint {
         }
 
         return true;
+    }
+
+    //========== the follow is adapter for spring context bean ============
+    private static ApplicationContext applicationContext;
+    public static ApplicationContext getApplicationContext() {
+        return applicationContext;
+    }
+    public static void setApplicationContext(ApplicationContext appContext) {
+        applicationContext = appContext;
+    }
+    public static <T> T getBean(String name) {
+        return (T) applicationContext.getBean(name);
+    }
+    public static <T> T getBean(Class<T> clazz) {
+        return applicationContext.getBean(clazz);
     }
 
     public Session getSession() {

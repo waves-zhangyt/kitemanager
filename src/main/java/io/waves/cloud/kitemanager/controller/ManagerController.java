@@ -4,11 +4,13 @@
  */
 package io.waves.cloud.kitemanager.controller;
 
+import io.waves.cloud.kitemanager.conf.KiteManangerProperties;
 import io.waves.cloud.kitemanager.ro.ResultRo;
 import io.waves.cloud.kitemanager.util.StringUtil;
 import io.waves.cloud.kitemanager.util.VelocityUtil;
 import io.waves.cloud.kitemanager.websocket.KiteWebSocketEndpoint;
 import org.apache.velocity.VelocityContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +25,9 @@ import java.util.Map;
  */
 @RestController
 public class ManagerController {
+
+    @Autowired
+    private KiteManangerProperties kiteManangerProperties;
 
     /** 主页，进入agent列表 */
     @RequestMapping("/")
@@ -78,6 +83,12 @@ public class ManagerController {
         velocityContext.put("clientId", clientId);
         velocityContext.put("user", request.getSession().getAttribute("user"));
         return VelocityUtil.merge(velocityContext, "io/waves/cloud/kitemanager/ro/vm/exec.html", "UTF-8");
+    }
+
+    /** get the max client number (it's a threshold, no more client can join when the client conneciton more than it) */
+    @RequestMapping("maxClientNumber")
+    public int maxClientNumber() {
+        return kiteManangerProperties.getMaxClientNumber();
     }
 
 }

@@ -4,8 +4,10 @@
  */
 package io.waves.cloud.kitemanager;
 
+import io.waves.cloud.kitemanager.websocket.KiteWebSocketEndpoint;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 
 /**
  * 引导类
@@ -15,7 +17,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class KiteManagerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(KiteManagerApplication.class, args);
+        ApplicationContext context = SpringApplication.run(KiteManagerApplication.class, args);
+        KiteWebSocketEndpoint.setApplicationContext(context);
     }
 
 }

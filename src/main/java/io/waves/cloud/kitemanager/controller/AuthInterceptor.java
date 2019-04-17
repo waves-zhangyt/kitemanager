@@ -52,13 +52,14 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 
         // 1.white list region
         String uri = request.getRequestURI();
-        if (uri.startsWith("/kite/h2-console/")) return true;
+        if (uri.startsWith("/kite/mm-h2-console/")) return true;
         String[] whiteUris = new String[] {
                 contextPath + "/user/login.html",
                 contextPath + "/user/login",
                 contextPath + "/error",
                 contextPath + "/update/latestAgentVersion",
-                contextPath + "/update/latestAgent"
+                contextPath + "/update/latestAgent",
+                contextPath + "/maxClientNumber"
         };
         for (String item : whiteUris) {
             if (item.equals(uri)) return true;

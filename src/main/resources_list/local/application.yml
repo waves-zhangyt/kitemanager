@@ -29,7 +29,9 @@ spring:
   application:
     name: "kite-manager"
   #h2 database console
-  h2.console.enabled: true
+  h2.console:
+    enabled: true
+    path: /mm-h2-console
   datasource:
     driver-class-name: org.h2.Driver
     url: "jdbc:h2:file:./db/kitemanager"
@@ -62,3 +64,4 @@ kitemanager:
   openApiApp:
     # the open api timestamp timeout interval seconds
     tokenInterval: 30
+  maxClientNumber: 1
