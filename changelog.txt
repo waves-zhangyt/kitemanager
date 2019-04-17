@@ -1,3 +1,9 @@
+0.7.0-SNAPSHOT
+1.improve page look
+2.add conneciton auth and max client number threshold
+3.add open api auth
+3.add admin manager function
+
 0.6.1-SNAPSHOT
 1.增加jvm启动参数在判断ipv6的ip被选择为agentId时，强制使用connection url中第一个ipv4地址，否则需要在启动KiteAgent的时候,自行指定。
     -DforceFirstIpv4WhenIpv6=true
