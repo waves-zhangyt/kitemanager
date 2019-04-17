@@ -92,7 +92,7 @@
                 } else {
                     let html = "";
                     for (i in data.data) {
-                        html += "<li title=\"" + data.data[i][1] + "\">" + data.data[i][0] + "</li>";
+                        html += "<li title=\"" + data.data[i][1] + "\"><span>" + data.data[i][0] + "</span></li>";
                     }
                     $("#agentList").find("li").unbind("click");
                     $("#agentList").html(html);
