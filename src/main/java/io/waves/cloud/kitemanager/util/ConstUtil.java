@@ -17,6 +17,7 @@ public abstract class ConstUtil {
     public final static int readedCacheSecond = 5 * 60;
 
     public final static String cmdRun = "cmd.run";
+    public final static String cmdSmallFileReceive = "cmd.smallFileReceive";
     public final static String proxyHttp = "proxy.http";
 
 }

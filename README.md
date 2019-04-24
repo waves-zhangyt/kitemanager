@@ -23,6 +23,7 @@ kitemanager项目是是flying-kite的子项目，是kiteagent的服务端(manage
 | ------------ | ------------ |
 | cmd.rum  | 通用命令 |
 | proxy.http | http代理命令 |
+| cmd.smallFileReceive | 小文件上传命令 |
 
 #### 四. 体验
 详见 https://yt.wavesxa.com/blog/readBlog/27.html 位较低版本示例，最新版本应用说明待续。
