@@ -15,9 +15,9 @@ server:
       enabled: true
       dir: logs
       pattern: "[%{time,yyyy-MM-dd HH:mm:ss.S z}] %{i,X-Forwarded-For} %a \"%r\" %s (%D ms)"
-      prefix: access_log
+      prefix: access_log.
       rotate: true
-      suffix: .log
+      suffix: log
 
 logging:
   level:
@@ -65,3 +65,6 @@ kitemanager:
     # the open api timestamp timeout interval seconds
     tokenInterval: 30
   maxClientNumber: 20000
+  # kite agent connection auth setting
+  connectionAuthEnabled: false
+  connectionSecret: hellokitemanager
