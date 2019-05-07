@@ -58,6 +58,8 @@ public class UserController {
             }
 
             request.getSession().setAttribute("user", user);
+            // name in session is for access log
+            request.getSession().setAttribute("name", user.getName());
             return new ResultRo(200, "ok", toUrl);
         }
 
