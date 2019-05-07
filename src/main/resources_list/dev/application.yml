@@ -14,7 +14,7 @@ server:
     accesslog:
       enabled: true
       dir: logs
-      pattern: "[%{time,yyyy-MM-dd HH:mm:ss.S z}] %{s,name} %{i,X-Forwarded-For} %a \"%r\" %s (%D ms)"
+      pattern: "[%{time,yyyy-MM-dd HH:mm:ss.S z}] %{s,name} [%{i,kAppId}] %{i,X-Forwarded-For} %a \"%r\" %s (%D ms)"
       prefix: access_log.
       rotate: true
       suffix: log
