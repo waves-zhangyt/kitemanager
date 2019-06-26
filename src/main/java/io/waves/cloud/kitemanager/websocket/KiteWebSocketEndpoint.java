@@ -76,11 +76,13 @@ public class KiteWebSocketEndpoint {
         }
         if (clientIds == null || clientIds.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供id");
+            logger.warn("客户端未提供id");
             sendConnectionErroMessage(cmd);
             return;
         }
         if (ipv4 == null || ipv4.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供ip");
+            logger.warn("客户端未提供ipv4");
             sendConnectionErroMessage(cmd);
             return;
         }
@@ -123,11 +125,13 @@ public class KiteWebSocketEndpoint {
         }
         if (maxThanMaxClientNumber) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "the number of client is full at server end");
+            logger.warn("the number of client is full at server end");
             sendConnectionErroMessage(cmd);
             return;
         }
         if (clientIdConflict) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端id重复");
+            logger.info("客户端 id: \"{}\" 重复", clientId);
             sendConnectionErroMessage(cmd);
             return;
         }
