@@ -1,7 +1,7 @@
 kitemanager项目由ytzhan0828@qq.com创建。该项目使用Apache-2.0 license发布。
 kitemanager项目是是flying-kite的子项目，是kiteagent的服务端(manager center)。
 
-暂时文档放在了 https://yt.wavesxa.com/blog/readBlog/24.html
+暂时文档放在了 https://www.wavesxa.com/opendoc/viewBlog/2.html
 
 #### 一. Flying-Kite 是类salt stack的计算资源节点管理工具。
 可实现远程指令调用下发、部署执行，并作为节点agent等功能；可视为云计算的基础设施。
