@@ -56,8 +56,8 @@
 
 <ul id="agentList">
 #foreach( $key in $agentList.keySet() )
-    <li title="$agentList.get($key).clientIPv4">
-        <span>$key</span>
+    <li>
+        <span title="$agentList.get($key).clientIPv4">$key</span>
         <span title="当前1分钟(上1分钟)">&nbsp; $!{kiteAgentTransactionCounter.getRecorder($key).time1Count}($!{kiteAgentTransactionCounter.getRecorder($key).time1CountPri}),</span>
         <span title="当前5分钟(上5分钟)">$!{kiteAgentTransactionCounter.getRecorder($key).time5Count}($!{kiteAgentTransactionCounter.getRecorder($key).time5CountPri}),</span>
         <span title="当前15分钟(上15分钟)">$!{kiteAgentTransactionCounter.getRecorder($key).time15Count}($!{kiteAgentTransactionCounter.getRecorder($key).time15CountPri})</span>
@@ -96,8 +96,8 @@
                 } else {
                     var html = "";
                     for (i in data.data) {
-                        html += "<li title=\"" + data.data[i][1] + "\">" +
-                            "<span>" + data.data[i][0] + "</span>" +
+                        html += "<li>" +
+                            "<span title=\"" + data.data[i][1] + "\">" + data.data[i][0] + "</span>" +
                             "\n<span>&nbsp; " + data.data[i][2] + "(" + data.data[i][3] + ")" + "</span>" +
                             "\n<span>" + data.data[i][4] + "(" + data.data[i][5] + ")" + "</span>" +
                             "\n<span>" + data.data[i][6] + "(" + data.data[i][7] + ")" + "</span>" +
