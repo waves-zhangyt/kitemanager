@@ -5,12 +5,14 @@
 package io.waves.cloud.kitemanager.websocket;
 
 import io.waves.cloud.kitemanager.util.ConstUtil;
+import io.waves.cloud.kitemanager.util.JSONUtil;
 import io.waves.cloud.kitemanager.util.StringUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,7 +37,7 @@ public class KiteAgentConnectionChecker {
                 long interval = 0;
                 while (true) {
                     try {
-                        long sleepTime = 60000L - interval;
+                        long sleepTime = 180000L - interval;
                         Thread.sleep(sleepTime < 0 ? 0 : sleepTime);
                     } catch (InterruptedException e) {
                         logger.error("thread sleep error", e);
@@ -67,7 +69,16 @@ public class KiteAgentConnectionChecker {
     private void checkAgent(Map.Entry<String, KiteWebSocketEndpoint> agent) {
         String jobId = StringUtil.uuid();
         try {
-            Cmd cmd = new Cmd(ConstUtil.cmdRun, jobId, "echo \"conn check\"");
+            Map<String, Object> cmdBody = new LinkedHashMap<>();
+            cmdBody.put("method", "GET");
+            // note, if agent http server port changed, the health check is also ok
+            // (only the cmd result get the failed msg).
+            cmdBody.put("url", "http://127.0.0.1:19988/version");
+            cmdBody.put("headers", null);
+            cmdBody.put("body", null);
+            cmdBody.put("bodyType", null);
+
+            Cmd cmd = new Cmd(ConstUtil.proxyHttp, jobId, JSONUtil.encodeJSONString(cmdBody));
             int timeout = 3;
             cmd.getHead().setTimeout(timeout);
 
