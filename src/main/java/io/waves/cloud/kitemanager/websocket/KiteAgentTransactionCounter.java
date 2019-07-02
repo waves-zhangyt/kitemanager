@@ -54,15 +54,13 @@ public class KiteAgentTransactionCounter {
             } else {
                 time5CountPri = time5Count;
                 time5Count = 1;
-                time5Count = 1;
                 time5Start = now;
             }
 
             if (now - time15Start < time15) {
                 time15Count++;
             } else {
-                time5CountPri = time5Count;
-                time5Count = 1;
+                time15CountPri = time15Count;
                 time15Count = 1;
                 time15Start = now;
             }
