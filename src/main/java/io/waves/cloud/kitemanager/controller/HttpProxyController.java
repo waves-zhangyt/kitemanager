@@ -144,6 +144,7 @@ public class HttpProxyController {
                 logger.error("等待同步命令执行结果出现异常", e);
             }
             if (cmdResult == null) {
+                logger.warn("命令超时, client: {}, cmd: {}", clientId, cmdBody);
                 throw new RuntimeException("命令超时");
             }
         } catch (Exception e) {

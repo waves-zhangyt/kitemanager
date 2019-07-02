@@ -24,6 +24,7 @@ logging:
     root: "INFO"
     io.waves.cloud.kitemanager.websocket.KiteWebSocketEndpoint: "DEBUG"
     io.waves.cloud.kitemanager.framework.ControllerHelper: "DEBUG"
+    io.waves.cloud.kitemanager.websocket.KiteAgentConnectionChecker: "DEBUG"
 
 spring:
   application:

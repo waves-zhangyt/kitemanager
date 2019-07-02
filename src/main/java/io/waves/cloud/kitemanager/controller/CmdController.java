@@ -84,6 +84,7 @@ public class CmdController {
 
                     //超时获取不到结果对象 todo 可改进
                     if (cmdResult == null) {
+                        logger.warn("命令超时, client: {}, cmd: {}", clientId, cmdParams);
                         throw new RuntimeException("命令超时");
                     }
 
