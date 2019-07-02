@@ -61,18 +61,30 @@ public class ManagerController {
 
                 //输入为空时，不用过滤
                 if (StringUtil.isEmpty(text)) {
-                    String[] items = new String[] { entry.getValue().getClientId(), entry.getValue().getClientIPv4() };
-                    reList.add(items);
+                    reList.add(constructFilteredItem(entry));
                 }
                 //有输入时，需要过滤; 过滤不区分大小写
                 else if (key.toLowerCase().contains(lowerText) || clientIPv4.toLowerCase().contains(lowerText)) {
-                    //[ clientIp, clientIPv4 ]
-                    String[] items = new String[] { entry.getValue().getClientId(), entry.getValue().getClientIPv4() };
-                    reList.add(items);
+                    reList.add(constructFilteredItem(entry));
                 }
             }
             return reList;
         });
+    }
+
+    private String[] constructFilteredItem(Map.Entry<String, KiteWebSocketEndpoint> entry) {
+        String clientId = entry.getValue().getClientId();
+        String[] items = new String[] {
+                clientId, entry.getValue().getClientIPv4(),
+                String.valueOf(KiteAgentTransactionCounter.getRecorder(clientId).getTime1Count()),
+                String.valueOf(KiteAgentTransactionCounter.getRecorder(clientId).getTime1CountPri()),
+                String.valueOf(KiteAgentTransactionCounter.getRecorder(clientId).getTime5Count()),
+                String.valueOf(KiteAgentTransactionCounter.getRecorder(clientId).getTime5CountPri()),
+                String.valueOf(KiteAgentTransactionCounter.getRecorder(clientId).getTime15Count()),
+                String.valueOf(KiteAgentTransactionCounter.getRecorder(clientId).getTime15CountPri())
+        };
+
+        return items;
     }
 
     /** 进入命令执行页 */
