@@ -8,6 +8,7 @@ import io.waves.cloud.kitemanager.conf.KiteManangerProperties;
 import io.waves.cloud.kitemanager.ro.ResultRo;
 import io.waves.cloud.kitemanager.util.StringUtil;
 import io.waves.cloud.kitemanager.util.VelocityUtil;
+import io.waves.cloud.kitemanager.websocket.KiteAgentTransactionCounter;
 import io.waves.cloud.kitemanager.websocket.KiteWebSocketEndpoint;
 import org.apache.velocity.VelocityContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +42,7 @@ public class ManagerController {
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("agentList", treeMap);
         velocityContext.put("user", request.getSession().getAttribute("user"));
+        velocityContext.put("kiteAgentTransactionCounter", KiteAgentTransactionCounter.class);
         return VelocityUtil.merge(velocityContext, "io/waves/cloud/kitemanager/ro/vm/index.html", "UTF-8");
 
     }

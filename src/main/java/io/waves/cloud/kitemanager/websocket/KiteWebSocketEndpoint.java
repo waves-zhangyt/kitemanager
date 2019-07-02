@@ -142,6 +142,8 @@ public class KiteWebSocketEndpoint {
         } catch (IOException e) {
             logger.error("发送信息出错 {}", cmd, e);
         }
+
+        KiteAgentTransactionCounter.addRecorder(this.clientId);
     }
 
     private void sendConnectionErroMessage(Cmd cmd) {
@@ -160,6 +162,8 @@ public class KiteWebSocketEndpoint {
                 endpointMap.remove(clientId);
         }
 
+        KiteAgentTransactionCounter.removeRecorder(clientId);
+
         logger.info("一条连接关闭 clientId: {}", clientId);
     }
 
@@ -177,7 +181,7 @@ public class KiteWebSocketEndpoint {
                 head.setType(res_pong);
                 cmd.setHead(head);
                 cmd.setBody("pong");
-                sendCmd(clientId, cmd);
+                sendCmd(clientId, cmd, false);
             }
 
             //正常命令的返回信息
@@ -209,6 +213,15 @@ public class KiteWebSocketEndpoint {
      * @param cmd
      */
     public static boolean sendCmd(String clientId, Cmd cmd) {
+        return sendCmd(clientId, cmd, true);
+    }
+
+    /**
+     * 向客户端发送指令
+     * @param clientId
+     * @param cmd
+     */
+    public static boolean sendCmd(String clientId, Cmd cmd, boolean countTransaction) {
         try {
             logger.debug("发送消息：clientid {}, cmd {}", clientId, cmd);
             synchronized (endpointMap) {
@@ -216,6 +229,11 @@ public class KiteWebSocketEndpoint {
                     throw new RuntimeException("客户端连接不存在");
                 }
             }
+
+            if (countTransaction) {
+                KiteAgentTransactionCounter.increment(clientId);
+            }
+
             endpointMap.get(clientId).getSession().getBasicRemote().sendText(cmd.toJSONString());
         } catch (IOException e) {
             logger.error("发送命令出错 clientId {}, cmd {}", clientId, cmd, e);

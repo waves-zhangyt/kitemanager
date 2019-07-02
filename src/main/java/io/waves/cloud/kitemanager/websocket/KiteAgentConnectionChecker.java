@@ -83,7 +83,7 @@ public class KiteAgentConnectionChecker {
             cmd.getHead().setTimeout(timeout);
 
             CmdResultSyncer.addJob(jobId);
-            KiteWebSocketEndpoint.sendCmd(agent.getKey(), cmd);
+            KiteWebSocketEndpoint.sendCmd(agent.getKey(), cmd, false);
             CmdResult cmdResult = CmdResultSyncer.getJobResult(jobId, timeout + 2);
             String stdout = cmdResult.getStdout();
             if (!StringUtil.isEmpty(stdout)) {

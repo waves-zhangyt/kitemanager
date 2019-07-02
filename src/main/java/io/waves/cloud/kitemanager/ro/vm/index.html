@@ -25,13 +25,13 @@
         }
         li {
             display: inline-block;
-            width: 20em;
+            width: 27em;
             height: 2em;
-            color: blue;
             list-style: none;
             margin: 0.25em;
         }
-        #agentList li span {
+        #agentList li span:first-child {
+            color: blue;
             cursor: pointer;
         }
     </style>
@@ -55,9 +55,13 @@
 <div>
 
 <ul id="agentList">
-    <!-- todo 加入链接进入命令执行页面 -->
 #foreach( $key in $agentList.keySet() )
-    <li title="$agentList.get($key).clientIPv4"><span>$key</span></li>
+    <li title="$agentList.get($key).clientIPv4">
+        <span>$key</span>
+        <span title="当前1分钟(上1分钟)">&nbsp; $!{kiteAgentTransactionCounter.getRecorder($key).time1Count}($!{kiteAgentTransactionCounter.getRecorder($key).time1CountPri}),</span>
+        <span title="当前5分钟(上5分钟)">$!{kiteAgentTransactionCounter.getRecorder($key).time5Count}($!{kiteAgentTransactionCounter.getRecorder($key).time5CountPri}),</span>
+        <span title="当前15分钟(上15分钟)">$!{kiteAgentTransactionCounter.getRecorder($key).time15Count}($!{kiteAgentTransactionCounter.getRecorder($key).time15CountPri})</span>
+    </li>
 #end
 </ul>
 
@@ -80,7 +84,7 @@
     });
 
     $("#filterText").keyup(function() {
-        let text = $("#filterText").val();
+        var text = $("#filterText").val();
         $.ajax({
             type: "post",
             data: { "text" : text },
@@ -90,7 +94,7 @@
                 if (data.code != 200) {
                     alert(data.msg);
                 } else {
-                    let html = "";
+                    var html = "";
                     for (i in data.data) {
                         html += "<li title=\"" + data.data[i][1] + "\"><span>" + data.data[i][0] + "</span></li>";
                     }
@@ -104,12 +108,12 @@
     });
 
     //点击进入命令执行页面
-    let toExePate = function () {
-        let text = $(this).text();
-        let clientId = text;
+    var toExePate = function () {
+        var text = $(this).text();
+        var clientId = text;
         window.location = "execPage?clientId=" + clientId;
     };
-    $("#agentList").find("li span").click(toExePate);
+    $("#agentList").find("li span:first-child").click(toExePate);
 </script>
 
 </html>
