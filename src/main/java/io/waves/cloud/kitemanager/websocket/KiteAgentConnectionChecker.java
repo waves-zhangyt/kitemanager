@@ -79,12 +79,16 @@ public class KiteAgentConnectionChecker {
             cmdBody.put("bodyType", null);
 
             Cmd cmd = new Cmd(ConstUtil.proxyHttp, jobId, JSONUtil.encodeJSONString(cmdBody));
-            int timeout = 3;
+            int timeout = 5;
             cmd.getHead().setTimeout(timeout);
 
             CmdResultSyncer.addJob(jobId);
             KiteWebSocketEndpoint.sendCmd(agent.getKey(), cmd, false);
-            CmdResult cmdResult = CmdResultSyncer.getJobResult(jobId, timeout + 2);
+            CmdResult cmdResult = CmdResultSyncer.getJobResult(jobId, timeout + 1);
+            if (cmdResult == null) {
+                logger.warn("conn check command exception, agentId: {}", agent.getKey());
+                return;
+            }
             String stdout = cmdResult.getStdout();
             if (!StringUtil.isEmpty(stdout)) {
                 stdout = stdout.trim();
