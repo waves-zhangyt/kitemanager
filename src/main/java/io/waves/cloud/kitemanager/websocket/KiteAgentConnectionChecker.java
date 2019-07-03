@@ -12,9 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * kite agent connection health checker
@@ -24,6 +24,8 @@ import java.util.Set;
 public class KiteAgentConnectionChecker {
 
     private static Logger logger = LoggerFactory.getLogger(KiteAgentConnectionChecker.class);
+
+    private static long tickTime = 180000L;
 
     /**
      * loop all kiteagent and send the simple echo command to check
@@ -37,7 +39,7 @@ public class KiteAgentConnectionChecker {
                 long interval = 0;
                 while (true) {
                     try {
-                        long sleepTime = 180000L - interval;
+                        long sleepTime = tickTime - interval;
                         Thread.sleep(sleepTime < 0 ? 0 : sleepTime);
                     } catch (InterruptedException e) {
                         logger.error("thread sleep error", e);
@@ -46,12 +48,9 @@ public class KiteAgentConnectionChecker {
                     long start = System.currentTimeMillis();
                     try {
                         Map<String, KiteWebSocketEndpoint> endpointMap = KiteWebSocketEndpoint.getEndpointMap();
-                        Set<Map.Entry<String, KiteWebSocketEndpoint>> agents;
-                        synchronized (endpointMap) {
-                            agents = endpointMap.entrySet();
-                        }
-                        for (Map.Entry<String, KiteWebSocketEndpoint> agent : agents) {
-                            checkAgent(agent);
+                        for (Iterator<Map.Entry<String, KiteWebSocketEndpoint>> iterator = endpointMap.entrySet().iterator();
+                             iterator.hasNext();) {
+                            checkAgent(iterator.next());
                         }
                     } catch (Exception e) {
                         logger.error("check conn error", e);
@@ -67,6 +66,12 @@ public class KiteAgentConnectionChecker {
     }
 
     private void checkAgent(Map.Entry<String, KiteWebSocketEndpoint> agent) {
+        KiteWebSocketEndpoint endpoint = agent.getValue();
+        if (!endpoint.getSession().isOpen()) {
+            logger.info("conn check abort for agentId: {}, as session closed", agent.getKey());
+            return;
+        }
+
         String jobId = StringUtil.uuid();
         try {
             Map<String, Object> cmdBody = new LinkedHashMap<>();
