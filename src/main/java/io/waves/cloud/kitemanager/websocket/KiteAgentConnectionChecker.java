@@ -91,7 +91,7 @@ public class KiteAgentConnectionChecker {
             KiteWebSocketEndpoint.sendCmd(agent.getKey(), cmd, false);
             CmdResult cmdResult = CmdResultSyncer.getJobResult(jobId, timeout + 1);
             if (cmdResult == null) {
-                logger.warn("conn check command exception, agentId: {}", agent.getKey());
+                logger.warn("conn check command timeout, agentId: {}", agent.getKey());
                 return;
             }
             String stdout = cmdResult.getStdout();
