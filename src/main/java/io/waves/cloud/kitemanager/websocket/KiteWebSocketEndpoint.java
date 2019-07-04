@@ -70,20 +70,20 @@ public class KiteWebSocketEndpoint {
                     || !connectionSecret.get(0).equals(kiteManangerProperties.getConnectionSecret())) {
                 logger.warn("illegal client try to connect, client:{}, ipv4:{}, secret:{}", clientIds, ipv4, connectionSecret);
                 Cmd cmd = new Cmd(CmdTypes.res_error, "非法连接");
-                sendConnectionErroMessage(cmd);
+                sendConnectionErrorMessage(cmd);
                 return;
             }
         }
         if (clientIds == null || clientIds.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供id");
             logger.warn("客户端未提供id");
-            sendConnectionErroMessage(cmd);
+            sendConnectionErrorMessage(cmd);
             return;
         }
         if (ipv4 == null || ipv4.isEmpty()) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端未提供ip");
             logger.warn("客户端未提供ipv4");
-            sendConnectionErroMessage(cmd);
+            sendConnectionErrorMessage(cmd);
             return;
         }
 
@@ -126,13 +126,13 @@ public class KiteWebSocketEndpoint {
         if (maxThanMaxClientNumber) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "the number of client is full at server end");
             logger.warn("the number of client is full at server end");
-            sendConnectionErroMessage(cmd);
+            sendConnectionErrorMessage(cmd);
             return;
         }
         if (clientIdConflict) {
             Cmd cmd = new Cmd(CmdTypes.res_error, "客户端id重复");
             logger.info("客户端 id: \"{}\" 重复", clientId);
-            sendConnectionErroMessage(cmd);
+            sendConnectionErrorMessage(cmd);
             return;
         }
 
@@ -146,7 +146,7 @@ public class KiteWebSocketEndpoint {
         KiteAgentTransactionCounter.addRecorder(this.clientId);
     }
 
-    private void sendConnectionErroMessage(Cmd cmd) {
+    private void sendConnectionErrorMessage(Cmd cmd) {
         try {
             session.getBasicRemote().sendText(cmd.toJSONString());
             session.close();
@@ -162,7 +162,8 @@ public class KiteWebSocketEndpoint {
                 endpointMap.remove(clientId);
         }
 
-        KiteAgentTransactionCounter.removeRecorder(clientId);
+        if (clientId != null)
+            KiteAgentTransactionCounter.removeRecorder(clientId);
 
         logger.info("一条连接关闭 clientId: {}", clientId);
     }
