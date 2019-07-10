@@ -12,9 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * kite agent connection health checker
@@ -48,9 +46,14 @@ public class KiteAgentConnectionChecker {
                     long start = System.currentTimeMillis();
                     try {
                         Map<String, KiteWebSocketEndpoint> endpointMap = KiteWebSocketEndpoint.getEndpointMap();
-                        for (Iterator<Map.Entry<String, KiteWebSocketEndpoint>> iterator = endpointMap.entrySet().iterator();
-                             iterator.hasNext();) {
-                            checkAgent(iterator.next());
+                        Set<String> keys = endpointMap.keySet();
+                        List<String> ids = new ArrayList<>();
+                        ids.addAll(keys);
+                        for (String key : ids) {
+                            KiteWebSocketEndpoint endpoint = endpointMap.get(key);
+                            if (endpoint != null) {
+                                checkAgent(endpoint);
+                            }
                         }
                     } catch (Exception e) {
                         logger.error("check conn error", e);
@@ -65,10 +68,9 @@ public class KiteAgentConnectionChecker {
         thread.start();
     }
 
-    private void checkAgent(Map.Entry<String, KiteWebSocketEndpoint> agent) {
-        KiteWebSocketEndpoint endpoint = agent.getValue();
+    private void checkAgent(KiteWebSocketEndpoint endpoint) {
         if (!endpoint.getSession().isOpen()) {
-            logger.info("conn check abort for agentId: {}, as session closed", agent.getKey());
+            logger.info("conn check abort for agentId: {}, as session closed", endpoint.getClientId());
             return;
         }
 
@@ -88,19 +90,19 @@ public class KiteAgentConnectionChecker {
             cmd.getHead().setTimeout(timeout);
 
             CmdResultSyncer.addJob(jobId);
-            KiteWebSocketEndpoint.sendCmd(agent.getKey(), cmd, false);
+            KiteWebSocketEndpoint.sendCmd(endpoint.getClientId(), cmd, false);
             CmdResult cmdResult = CmdResultSyncer.getJobResult(jobId, timeout + 1);
             if (cmdResult == null) {
-                logger.warn("conn check command timeout, agentId: {}", agent.getKey());
+                logger.warn("conn check command timeout, agentId: {}", endpoint.getClientId());
                 return;
             }
             String stdout = cmdResult.getStdout();
             if (!StringUtil.isEmpty(stdout)) {
                 stdout = stdout.trim();
             }
-            logger.debug("conn check back, agentId: {}, stdout: {} ", agent.getKey(), stdout);
+            logger.debug("conn check back, agentId: {}, stdout: {} ", endpoint.getClientId(), stdout);
         } catch (Exception e) {
-            logger.error("conn check command exception, agentId: {}", agent.getKey(), e);
+            logger.error("conn check command exception, agentId: {}", endpoint.getClientId(), e);
         } finally {
             CmdResultSyncer.clearJob(jobId);
         }
